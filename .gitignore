@@ -1,0 +1,6 @@
+/.playwright-mcp
+/.vscode
+/.vscode-test
+/coverage
+/node_modules
+/.DS_Store

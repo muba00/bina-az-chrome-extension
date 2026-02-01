@@ -1,14 +1,33 @@
 /* Styles for injected content */
 
-/* Example: Custom banner styling */
-.bina-modifier-banner {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 14px;
-  z-index: 10000;
+/* Price per square meter badge */
+.price-per-sqm-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  margin-top: 4px;
+  padding: 4px 8px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 4px;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Add your custom styles here for modified elements */
+.price-per-sqm-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}
+
+.price-per-sqm-unit {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Add subtle animation on hover */
+.item-card:hover .price-per-sqm-badge {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
