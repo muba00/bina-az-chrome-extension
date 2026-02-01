@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Bina.az Modifier",
+  "name": "Bina.az Qiymət Analizatoru",
   "version": "1.0.0",
-  "description": "Chrome extension to modify HTML content on specific websites",
+  "description": "Bina.az saytında mənzil qiymətlərini təhlil edən və kvadrat metr başına qiyməti göstərən genişləndirmə",
   "permissions": ["activeTab", "scripting", "storage"],
   "action": {
     "default_popup": "popup.html",
