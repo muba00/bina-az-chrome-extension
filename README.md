@@ -7,7 +7,7 @@ Chrome genişləndirməsi ki, bina.az saytında mənzil qiymətlərini təhlil e
 ### 1. Kodu yükləyin
 
 ```bash
-git clone https://github.com/your-username/bina-az-chrome-extension.git
+git clone https://github.com/muba00/bina-az-chrome-extension.git
 ```
 
 ### 2. Chrome-a əlavə edin
