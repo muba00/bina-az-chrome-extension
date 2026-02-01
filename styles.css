@@ -1,0 +1,14 @@
+/* Styles for injected content */
+
+/* Example: Custom banner styling */
+.bina-modifier-banner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  z-index: 10000;
+}
+
+/* Add your custom styles here for modified elements */
