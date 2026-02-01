@@ -3,7 +3,7 @@
   "name": "Bina.az Modifier",
   "version": "1.0.0",
   "description": "Chrome extension to modify HTML content on specific websites",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "storage"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {

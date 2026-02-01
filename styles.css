@@ -7,10 +7,30 @@
   gap: 2px;
   margin-top: 4px;
   padding: 4px 8px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border-radius: 4px;
   font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: background 0.3s ease;
+}
+
+/* Loading state - gray */
+.price-per-sqm-loading {
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+}
+
+/* Good price - green */
+.price-per-sqm-good {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* Average price - yellow */
+.price-per-sqm-average {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+/* Expensive price - red */
+.price-per-sqm-expensive {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
 }
 
 .price-per-sqm-value {

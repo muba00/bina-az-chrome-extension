@@ -76,9 +76,10 @@ function addPricePerSqmToListings() {
             // Find the price container to insert our badge after it
             const priceContainer = card.querySelector('.price-container');
             if (priceContainer && priceContainer.parentElement) {
-                // Create the price per sqm badge
+                // Create the price per sqm badge with gray color initially
                 const badge = document.createElement('div');
-                badge.className = 'price-per-sqm-badge';
+                badge.className = 'price-per-sqm-badge price-per-sqm-loading';
+                badge.setAttribute('data-price-per-sqm', pricePerSqm);
                 badge.innerHTML = `
           <span class="price-per-sqm-value">${pricePerSqm.toLocaleString('en-US')}</span>
           <span class="price-per-sqm-unit">₼/m²</span>
@@ -92,6 +93,78 @@ function addPricePerSqmToListings() {
     });
 
     console.log(`Bina.az Modifier: Added price per sqm to ${modifiedCount} listings`);
+
+    // Asynchronously compare prices and update colors
+    if (modifiedCount > 0) {
+        setTimeout(() => updateBadgeColorsAsync(), 100);
+    }
+}
+
+async function updateBadgeColorsAsync() {
+    console.log('Bina.az Modifier: Starting price comparison...');
+
+    // Collect all badges and their prices
+    const badges = document.querySelectorAll('.price-per-sqm-badge');
+    const pricesData = [];
+
+    badges.forEach(badge => {
+        const pricePerSqm = parseInt(badge.getAttribute('data-price-per-sqm'));
+        if (pricePerSqm) {
+            pricesData.push({ badge, pricePerSqm });
+        }
+    });
+
+    if (pricesData.length === 0) {
+        console.log('Bina.az Modifier: No prices to compare');
+        return;
+    }
+
+    // Sort prices to calculate percentiles
+    const sortedPrices = pricesData.map(d => d.pricePerSqm).sort((a, b) => a - b);
+
+    // Calculate thresholds using quartiles
+    const q1Index = Math.floor(sortedPrices.length * 0.25);
+    const q3Index = Math.floor(sortedPrices.length * 0.75);
+
+    const goodThreshold = sortedPrices[q1Index]; // Bottom 25% = good prices
+    const expensiveThreshold = sortedPrices[q3Index]; // Top 25% = expensive
+
+    console.log(`Bina.az Modifier: Price analysis - Good: ≤${goodThreshold}, Expensive: ≥${expensiveThreshold}`);
+
+    // Update each badge color based on its price
+    pricesData.forEach(({ badge, pricePerSqm }) => {
+        // Remove loading class
+        badge.classList.remove('price-per-sqm-loading');
+
+        // Add appropriate color class
+        if (pricePerSqm <= goodThreshold) {
+            badge.classList.add('price-per-sqm-good');
+        } else if (pricePerSqm >= expensiveThreshold) {
+            badge.classList.add('price-per-sqm-expensive');
+        } else {
+            badge.classList.add('price-per-sqm-average');
+        }
+    });
+
+    console.log(`Bina.az Modifier: Updated colors for ${pricesData.length} listings`);
+
+    // Store statistics for the popup
+    const minPrice = sortedPrices[0];
+    const maxPrice = sortedPrices[sortedPrices.length - 1];
+
+    const stats = {
+        totalListings: pricesData.length,
+        minPricePerSqm: minPrice,
+        maxPricePerSqm: maxPrice,
+        goodThreshold: goodThreshold,
+        expensiveThreshold: expensiveThreshold,
+        lastUpdated: new Date().toISOString()
+    };
+
+    // Save to chrome storage
+    chrome.storage.local.set({ priceStats: stats }, () => {
+        console.log('Bina.az Modifier: Statistics saved', stats);
+    });
 }
 
 function observeDOMChanges() {
