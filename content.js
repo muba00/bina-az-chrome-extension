@@ -133,8 +133,8 @@ async function updateBadgeColorsAsync() {
 
     // Update each badge color based on its price
     pricesData.forEach(({ badge, pricePerSqm }) => {
-        // Remove loading class
-        badge.classList.remove('price-per-sqm-loading');
+        // Remove all existing color classes
+        badge.classList.remove('price-per-sqm-loading', 'price-per-sqm-good', 'price-per-sqm-average', 'price-per-sqm-expensive');
 
         // Add appropriate color class
         if (pricePerSqm <= goodThreshold) {
