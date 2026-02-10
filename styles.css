@@ -51,6 +51,26 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
+/* Rank badge for top 5 best prices */
+.price-per-sqm-rank {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-right: 6px;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.price-per-sqm-rank::before {
+  content: "🏆";
+  font-size: 13px;
+}
+
 /* Add subtle animation on hover */
 .item-card:hover .price-per-sqm-badge {
   transform: scale(1.02);

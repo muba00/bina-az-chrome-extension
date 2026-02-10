@@ -80,6 +80,7 @@ function addPricePerSqmToListings() {
                 const badge = document.createElement('div');
                 badge.className = 'price-per-sqm-badge price-per-sqm-loading';
                 badge.setAttribute('data-price-per-sqm', pricePerSqm);
+                badge.setAttribute('data-total-price', price); // Store for tiebreaker
                 badge.innerHTML = `
           <span class="price-per-sqm-value">${pricePerSqm.toLocaleString('en-US')}</span>
           <span class="price-per-sqm-unit">₼/m²</span>
@@ -109,8 +110,9 @@ async function updateBadgeColorsAsync() {
 
     badges.forEach(badge => {
         const pricePerSqm = parseInt(badge.getAttribute('data-price-per-sqm'));
-        if (pricePerSqm) {
-            pricesData.push({ badge, pricePerSqm });
+        const totalPrice = parseInt(badge.getAttribute('data-total-price'));
+        if (pricePerSqm && totalPrice) {
+            pricesData.push({ badge, pricePerSqm, totalPrice });
         }
     });
 
@@ -133,14 +135,47 @@ async function updateBadgeColorsAsync() {
 
     console.log(`Bina.az Modifier: Price analysis - Best: ≤${goodThreshold}, Good: ≤${lightGoodThreshold}, Expensive: ≥${expensiveThreshold}`);
 
+    // Count how many "great" prices we have and identify top 5
+    const greatPrices = pricesData.filter(({ pricePerSqm }) => pricePerSqm <= goodThreshold);
+    const shouldShowRanks = greatPrices.length > 10;
+
+    // Sort great prices to find top 5 best (with tiebreaker by total price)
+    const top5 = shouldShowRanks
+        ? greatPrices.sort((a, b) => {
+            // Primary: sort by price per sqm (lower is better)
+            if (a.pricePerSqm !== b.pricePerSqm) {
+                return a.pricePerSqm - b.pricePerSqm;
+            }
+            // Tiebreaker: if same ₼/m², lower total price wins
+            return a.totalPrice - b.totalPrice;
+        }).slice(0, 5)
+        : [];
+
+    console.log(`Bina.az Modifier: Found ${greatPrices.length} great prices${shouldShowRanks ? ', showing top 5 ranks' : ''}`);
+
     // Update each badge color based on its price
     pricesData.forEach(({ badge, pricePerSqm }) => {
-        // Remove all existing color classes
+        // Remove all existing color classes and rank badges
         badge.classList.remove('price-per-sqm-loading', 'price-per-sqm-good', 'price-per-sqm-light-good', 'price-per-sqm-average', 'price-per-sqm-expensive');
+        const existingRank = badge.querySelector('.price-per-sqm-rank');
+        if (existingRank) {
+            existingRank.remove();
+        }
 
         // Add appropriate color class
         if (pricePerSqm <= goodThreshold) {
             badge.classList.add('price-per-sqm-good');
+
+            // Add rank if this is in top 5 and we have enough great prices
+            if (shouldShowRanks) {
+                const rankIndex = top5.findIndex(item => item.badge === badge);
+                if (rankIndex !== -1) {
+                    const rankBadge = document.createElement('span');
+                    rankBadge.className = 'price-per-sqm-rank';
+                    rankBadge.textContent = `${rankIndex + 1}`;
+                    badge.insertBefore(rankBadge, badge.firstChild);
+                }
+            }
         } else if (pricePerSqm <= lightGoodThreshold) {
             badge.classList.add('price-per-sqm-light-good');
         } else if (pricePerSqm >= expensiveThreshold) {
