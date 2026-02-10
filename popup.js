@@ -49,9 +49,19 @@ function loadStatistics() {
                 <div class="threshold-item">
                     <div class="color-indicator color-good"></div>
                     <div class="threshold-text">
-                        <strong>Əlverişli Qiymət:</strong> ≤ ${stats.goodThreshold.toLocaleString('en-US')} ₼/m²
+                        <strong>Ən Əlverişli:</strong> ≤ ${stats.goodThreshold.toLocaleString('en-US')} ₼/m²
                         <div style="font-size: 11px; color: #888; margin-top: 2px;">
-                            Elanların ən aşağı 25%-i
+                            Elanların ən aşağı 10%-i
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="threshold-item">
+                    <div class="color-indicator color-light-good"></div>
+                    <div class="threshold-text">
+                        <strong>Əlverişli:</strong> ${(stats.goodThreshold + 1).toLocaleString('en-US')} - ${stats.lightGoodThreshold.toLocaleString('en-US')} ₼/m²
+                        <div style="font-size: 11px; color: #888; margin-top: 2px;">
+                            Elanların 10-25%-i
                         </div>
                     </div>
                 </div>
@@ -59,7 +69,7 @@ function loadStatistics() {
                 <div class="threshold-item">
                     <div class="color-indicator color-average"></div>
                     <div class="threshold-text">
-                        <strong>Orta Qiymət:</strong> ${(stats.goodThreshold + 1).toLocaleString('en-US')} - ${(stats.expensiveThreshold - 1).toLocaleString('en-US')} ₼/m²
+                        <strong>Orta Qiymət:</strong> ${(stats.lightGoodThreshold + 1).toLocaleString('en-US')} - ${(stats.expensiveThreshold - 1).toLocaleString('en-US')} ₼/m²
                         <div style="font-size: 11px; color: #888; margin-top: 2px;">
                             Elanların orta 50%-i
                         </div>

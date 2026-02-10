@@ -122,23 +122,27 @@ async function updateBadgeColorsAsync() {
     // Sort prices to calculate percentiles
     const sortedPrices = pricesData.map(d => d.pricePerSqm).sort((a, b) => a - b);
 
-    // Calculate thresholds using quartiles
+    // Calculate thresholds using percentiles
+    const p10Index = Math.floor(sortedPrices.length * 0.10);
     const q1Index = Math.floor(sortedPrices.length * 0.25);
     const q3Index = Math.floor(sortedPrices.length * 0.75);
 
-    const goodThreshold = sortedPrices[q1Index]; // Bottom 25% = good prices
+    const goodThreshold = sortedPrices[p10Index]; // Bottom 10% = best prices (green)
+    const lightGoodThreshold = sortedPrices[q1Index]; // Bottom 10-25% = good prices (light green)
     const expensiveThreshold = sortedPrices[q3Index]; // Top 25% = expensive
 
-    console.log(`Bina.az Modifier: Price analysis - Good: ≤${goodThreshold}, Expensive: ≥${expensiveThreshold}`);
+    console.log(`Bina.az Modifier: Price analysis - Best: ≤${goodThreshold}, Good: ≤${lightGoodThreshold}, Expensive: ≥${expensiveThreshold}`);
 
     // Update each badge color based on its price
     pricesData.forEach(({ badge, pricePerSqm }) => {
         // Remove all existing color classes
-        badge.classList.remove('price-per-sqm-loading', 'price-per-sqm-good', 'price-per-sqm-average', 'price-per-sqm-expensive');
+        badge.classList.remove('price-per-sqm-loading', 'price-per-sqm-good', 'price-per-sqm-light-good', 'price-per-sqm-average', 'price-per-sqm-expensive');
 
         // Add appropriate color class
         if (pricePerSqm <= goodThreshold) {
             badge.classList.add('price-per-sqm-good');
+        } else if (pricePerSqm <= lightGoodThreshold) {
+            badge.classList.add('price-per-sqm-light-good');
         } else if (pricePerSqm >= expensiveThreshold) {
             badge.classList.add('price-per-sqm-expensive');
         } else {
@@ -157,6 +161,7 @@ async function updateBadgeColorsAsync() {
         minPricePerSqm: minPrice,
         maxPricePerSqm: maxPrice,
         goodThreshold: goodThreshold,
+        lightGoodThreshold: lightGoodThreshold,
         expensiveThreshold: expensiveThreshold,
         lastUpdated: new Date().toISOString()
     };
