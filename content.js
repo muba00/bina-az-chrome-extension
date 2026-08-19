@@ -153,6 +153,8 @@ async function updateBadgeColorsAsync() {
 
     console.log(`Bina.az Modifier: Found ${greatPrices.length} great prices${shouldShowRanks ? ', showing top 5 ranks' : ''}`);
 
+    updateTop5Overlay(shouldShowRanks ? top5 : []);
+
     // Update each badge color based on its price
     pricesData.forEach(({ badge, pricePerSqm }) => {
         // Remove all existing color classes and rank badges
@@ -204,6 +206,73 @@ async function updateBadgeColorsAsync() {
     // Save to chrome storage
     chrome.storage.local.set({ priceStats: stats }, () => {
         console.log('Bina.az Modifier: Statistics saved', stats);
+    });
+}
+
+const TOP5_OVERLAY_ID = 'bina-modifier-top5-overlay';
+const TOP5_OVERLAY_COLLAPSED_KEY = 'binaModifierTop5Collapsed';
+
+function ensureTop5Overlay() {
+    const existing = document.getElementById(TOP5_OVERLAY_ID);
+    if (existing) return existing;
+
+    const collapsed = localStorage.getItem(TOP5_OVERLAY_COLLAPSED_KEY) !== 'false'; // default collapsed
+
+    const overlay = document.createElement('div');
+    overlay.id = TOP5_OVERLAY_ID;
+    overlay.className = `bina-top5-overlay${collapsed ? ' collapsed' : ''}`;
+    overlay.style.display = 'none';
+    overlay.innerHTML = `
+        <button class="bina-top5-header" type="button">
+            <span class="bina-top5-title">🏆 Ən yaxşı 5 qiymət</span>
+            <span class="bina-top5-chevron">▾</span>
+        </button>
+        <div class="bina-top5-body">
+            <ul class="bina-top5-list"></ul>
+        </div>
+    `;
+
+    overlay.querySelector('.bina-top5-header').addEventListener('click', () => {
+        const isCollapsed = overlay.classList.toggle('collapsed');
+        localStorage.setItem(TOP5_OVERLAY_COLLAPSED_KEY, String(isCollapsed));
+    });
+
+    document.body.appendChild(overlay);
+    return overlay;
+}
+
+function updateTop5Overlay(top5) {
+    const overlay = ensureTop5Overlay();
+
+    if (top5.length === 0) {
+        overlay.style.display = 'none';
+        return;
+    }
+    overlay.style.display = '';
+
+    const list = overlay.querySelector('.bina-top5-list');
+    list.innerHTML = '';
+
+    top5.forEach(({ badge, pricePerSqm, totalPrice }, index) => {
+        const card = badge.closest('.item-card');
+        if (!card) return;
+
+        const item = document.createElement('li');
+        item.className = 'bina-top5-item';
+        item.innerHTML = `
+            <span class="bina-top5-rank">${index + 1}</span>
+            <span class="bina-top5-info">
+                <span class="bina-top5-price">${pricePerSqm.toLocaleString('en-US')} ₼/m²</span>
+                <span class="bina-top5-total">${totalPrice.toLocaleString('en-US')} ₼</span>
+            </span>
+        `;
+        item.addEventListener('click', () => {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card.classList.add('bina-top5-highlight');
+            setTimeout(() => card.classList.remove('bina-top5-highlight'), 1500);
+        });
+
+        list.appendChild(item);
     });
 }
 

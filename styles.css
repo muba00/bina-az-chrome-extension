@@ -76,3 +76,120 @@
   transform: scale(1.02);
   transition: transform 0.2s ease;
 }
+
+/* Floating collapsible overlay listing the top 5 best prices */
+.bina-top5-overlay {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 999999;
+  width: 280px;
+  max-width: calc(100vw - 40px);
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+}
+
+.bina-top5-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  border: none;
+  cursor: pointer;
+}
+
+.bina-top5-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.bina-top5-chevron {
+  font-size: 12px;
+  color: #ffffff;
+  transition: transform 0.2s ease;
+}
+
+.bina-top5-overlay.collapsed .bina-top5-chevron {
+  transform: rotate(-90deg);
+}
+
+.bina-top5-body {
+  max-height: 320px;
+  overflow-y: auto;
+  transition: max-height 0.25s ease;
+}
+
+.bina-top5-overlay.collapsed .bina-top5-body {
+  max-height: 0;
+}
+
+.bina-top5-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+}
+
+.bina-top5-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.bina-top5-item:hover {
+  background: #f0fdf4;
+}
+
+.bina-top5-rank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.bina-top5-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.bina-top5-price {
+  font-size: 13px;
+  font-weight: 600;
+  color: #065f46;
+}
+
+.bina-top5-total {
+  font-size: 11px;
+  color: #666;
+}
+
+/* Highlight animation when jumping to a listing from the overlay */
+.bina-top5-highlight {
+  animation: bina-top5-pulse 1.5s ease;
+}
+
+@keyframes bina-top5-pulse {
+  0%, 100% {
+    box-shadow: none;
+  }
+  25% {
+    box-shadow: 0 0 0 4px rgba(4, 120, 87, 0.5);
+  }
+}
